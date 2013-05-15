@@ -1,7 +1,7 @@
 <VirtualHost *:80>
     ServerName <%= vhost_domain %>
     ServerAdmin admin@<%= vhost_domain %>
-    <% unless vhost_alias then %>
+    <% if defined? vhost_alias then %>
 	ServerAlias admin@<%= vhost_alias %>
     <% end %>
 
