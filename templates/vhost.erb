@@ -1,6 +1,9 @@
 <VirtualHost *:80>
     ServerName <%= vhost_domain %>
     ServerAdmin admin@<%= vhost_domain %>
+    <% unless vhost_alias then %>
+	ServerAlias admin@<%= vhost_alias %>
+    <% end %>
 
     DocumentRoot <%= vhost_root %>
     ErrorLog ${APACHE_LOG_DIR}/<%= vhost_domain %>-error.log
