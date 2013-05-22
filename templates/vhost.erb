@@ -1,15 +1,15 @@
 <VirtualHost *:80>
-    ServerName <%= vhost_domain %>
-    ServerAdmin admin@<%= vhost_domain %>
-    <% if defined? vhost_alias then %>
-	ServerAlias admin@<%= vhost_alias %>
+    ServerName <%= @vhost_domain %>
+    ServerAdmin admin@<%= @vhost_domain %>
+    <% if @vhost_alias %>
+    ServerAlias <%= @vhost_alias %>
     <% end %>
 
-    DocumentRoot <%= vhost_root %>
-    ErrorLog ${APACHE_LOG_DIR}/<%= vhost_domain %>-error.log
-    CustomLog ${APACHE_LOG_DIR}/<%= vhost_domain %>-access.log common
+    DocumentRoot <%= @vhost_root %>
+    ErrorLog ${APACHE_LOG_DIR}/<%= @vhost_domain %>-error.log
+    CustomLog ${APACHE_LOG_DIR}/<%= @vhost_domain %>-access.log common
 
-    <Directory <%= vhost_root %>>
+    <Directory <%= @vhost_root %>>
 	Allow from all
 	Options +Includes +Indexes +FollowSymLinks
 	AllowOverride all

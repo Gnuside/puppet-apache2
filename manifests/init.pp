@@ -47,7 +47,7 @@ class apache2::service {
   }
 }
 
-define apache2::vhost ( $domain = "", $documentroot = "" ) {
+define apache2::vhost ( $domain = "", $documentroot = "", $alias = "" ) {
   include apache2
 
   if $domain == "" {
@@ -56,11 +56,17 @@ define apache2::vhost ( $domain = "", $documentroot = "" ) {
       $vhost_domain = $domain
     }
 
-    if $documentroot == "" {
-      $vhost_root = "${apache2_root}/${name}"
-      } else {
-        $vhost_root = $documentroot
-      }
+  if $alias == "" {
+    $vhost_alias = "www.${vhost_domain}"
+    } else {
+      $vhost_alias = $alias
+    }
+
+  if $documentroot == "" {
+    $vhost_root = "${apache2_root}/${name}"
+    } else {
+      $vhost_root = $documentroot
+    }
 
       file { "${apache2::apache2_sites}-available/${vhost_domain}":
         ensure => 'present',
