@@ -47,7 +47,7 @@ class apache2::service {
   }
 }
 
-define apache2::vhost ( $domain = "", $documentroot = "", $alias = "" ) {
+define apache2::vhost ( $domain = "", $documentroot = "", $domainalias = "" ) {
   include apache2
 
   if $domain == "" {
@@ -56,10 +56,10 @@ define apache2::vhost ( $domain = "", $documentroot = "", $alias = "" ) {
       $vhost_domain = $domain
     }
 
-  if $alias == "" {
+  if $domainalias == "" {
     $vhost_alias = "www.${vhost_domain}"
     } else {
-      $vhost_alias = $alias
+      $vhost_alias = $domainalias
     }
 
   if $documentroot == "" {
