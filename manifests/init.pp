@@ -106,14 +106,14 @@ define apache2::site ( $ensure = 'present') {
 # You can add a custom require (string) if the module depends on 
 # packages that aren't part of the default apache2 package. Because of 
 # the package dependencies, apache2 will automagically be included.
-define apache2::module ( $ensure = 'present', $require = 'apache2' ) {
+define apache2::module ( $ensure = 'present', $require = Package['apache2'] ) {
   case $ensure {
     'present' : {
       #notice("pif : $require")
       exec { "/usr/sbin/a2enmod $name":
         unless => "/bin/readlink -e ${apache2::apache2_mods}-enabled/${name}.load",
         notify => Exec["force-reload-apache2"],
-        require => Package[$require],
+        require => $require,
       }
     }
     'absent': {
