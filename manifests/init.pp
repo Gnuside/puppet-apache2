@@ -6,13 +6,17 @@
 
 ## CONFIG
 
-class apache2 {
+class apache2::params {
   $apache2_sites = "/etc/apache2/sites"
   $apache2_includes = "/etc/apache2/site-includes"
   $apache2_mods = "/etc/apache2/mods"
   $apache2_conf = "/etc/apache2/conf.d"
   $apache2_root = "/var/www"
+}
 
+class apache2 {
+
+  include apache2::params
 
   # setup packages
   package {
@@ -113,6 +117,8 @@ define apache2::site ( $ensure = 'present') {
 # packages that aren't part of the default apache2 package. Because of 
 # the package dependencies, apache2 will automagically be included.
 define apache2::module ( $ensure = 'present', $require = Package['apache2'] ) {
+  include apache2
+
   case $ensure {
     'present' : {
       #notice("pif : $require")
