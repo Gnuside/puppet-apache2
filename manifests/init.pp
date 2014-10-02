@@ -72,7 +72,7 @@ define apache2::vhost ( $domain = "", $documentroot = "", $domainalias = "" ) {
       $vhost_root = $documentroot
     }
 
-      file { "${apache2::apache2_sites}-available/${vhost_domain}":
+      file { "${apache2::params::apache2_sites}-available/${vhost_domain}":
         ensure => 'present',
         content => template("apache2/vhost.erb"),
         require => Package['apache2'],
@@ -93,17 +93,17 @@ define apache2::site ( $ensure = 'present') {
   case $ensure {
     'present' : {
       exec { "/usr/sbin/a2ensite $name":
-        unless => "/bin/readlink -e ${apache2::apache2_sites}-enabled/$name",
+        unless => "/bin/readlink -e ${apache2::params::apache2_sites}-enabled/$name",
         notify => Exec["reload-apache2"],
-        require => File["${apache2::apache2_sites}-available/$name"],
+        require => File["${apache2::params::apache2_sites}-available/$name"],
       }
     }
 
     'absent' : {
       exec { "/usr/sbin/a2dissite $name":
-        onlyif => "/bin/readlink -e ${apache2::apache2_sites}-enabled/$name",
+        onlyif => "/bin/readlink -e ${apache2::params::apache2_sites}-enabled/$name",
         notify => Exec["reload-apache2"],
-        require => File["${apache2::apache2_sites}-available/$name"],
+        require => File["${apache2::params::apache2_sites}-available/$name"],
       }
     }
     default: { err ( "Unknown ensure value: '$ensure'" ) }
@@ -123,14 +123,14 @@ define apache2::module ( $ensure = 'present', $require = Package['apache2'] ) {
     'present' : {
       #notice("pif : $require")
       exec { "/usr/sbin/a2enmod $name":
-        unless => "/bin/readlink -e ${apache2::apache2_mods}-enabled/${name}.load",
+        unless => "/bin/readlink -e ${apache2::params::apache2_mods}-enabled/${name}.load",
         notify => Exec["force-reload-apache2"],
         require => $require,
       }
     }
     'absent': {
       exec { "/usr/sbin/a2dismod $name":
-        onlyif => "/bin/readlink -e ${apache2::apache2_mods}-enabled/${name}.load",
+        onlyif => "/bin/readlink -e ${apache2::params::apache2_mods}-enabled/${name}.load",
         notify => Exec["force-reload-apache2"],
         require => Package["apache2"],
       }
