@@ -72,7 +72,7 @@ define apache2::vhost ( $domain = "", $documentroot = "", $domainalias = "" ) {
       $vhost_root = $documentroot
     }
 
-      file { "${apache2::params::apache2_sites}-available/${vhost_domain}":
+      file { "${apache2::params::apache2_sites}-available/${vhost_domain}.conf":
         ensure => 'present',
         content => template("apache2/vhost.erb"),
         require => Package['apache2'],
@@ -93,17 +93,17 @@ define apache2::site ( $ensure = 'present') {
   case $ensure {
     'present' : {
       exec { "/usr/sbin/a2ensite $name":
-        unless => "/bin/readlink -e ${apache2::params::apache2_sites}-enabled/$name",
+        unless => "/bin/readlink -e ${apache2::params::apache2_sites}-enabled/$name.conf",
         notify => Exec["reload-apache2"],
-        require => File["${apache2::params::apache2_sites}-available/$name"],
+        require => File["${apache2::params::apache2_sites}-available/$name.conf"],
       }
     }
 
     'absent' : {
       exec { "/usr/sbin/a2dissite $name":
-        onlyif => "/bin/readlink -e ${apache2::params::apache2_sites}-enabled/$name",
+        onlyif => "/bin/readlink -e ${apache2::params::apache2_sites}-enabled/$name.conf",
         notify => Exec["reload-apache2"],
-        require => File["${apache2::params::apache2_sites}-available/$name"],
+        require => File["${apache2::params::apache2_sites}-available/$name.conf"],
       }
     }
     default: { err ( "Unknown ensure value: '$ensure'" ) }
